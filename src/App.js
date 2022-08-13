@@ -1,55 +1,55 @@
-import React, { useEffect, useState } from "react";
-import "./index.css";
-import Tours from "./Tours";
-
-const url = "https://course-api.com/react-tours-project";
+import React, { useReducer, useState } from "react";
+import "./App.css";
 
 function App() {
-  const [tours, setTours] = useState([]);
-  const [loading, setLoading] = useState(true);
+ // const [count, setCount] = useState(0);
 
-  const removeTour = (id) => {
-    const newTours = tours.filter((tour) => tour.id !== id);
-    setTours(newTours);
-  };
+ const Actions = {
+  INCREMENT: "increment",
+  DECREMENT: "decrement",
+  
+ }
 
-  const fetchTours = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(url);
-      const tours = await response.json();
-      setLoading(false);
-      setTours(tours);
-    } catch (error) {
-      setLoading(false);
-      console.log(error);
+ function reducer(state, action) {
+  console.log(action);
+     switch (action.type) {
+    case Actions.INCREMENT:
+      return {count: state.count + 1};
+   case Actions.DECREMENT:
+      return { count: state.count - 1};
+    default:
+      return state;
     }
+ }
+
+ const initialState = { count: 0 };
+const [state, dispatch] = useReducer(reducer, 
+initialState);
+
+
+
+
+  const increment = () => {
+    // setCount(count + 1);
+    dispatch({ type: "increment"});
   };
 
-  useEffect(() => {
-    fetchTours();
-  }, []);
+  
 
-  if (loading) {
-    return <h1>Loading....</h1>;
-  }
+  const decrement = () => {
+    // setCount(count - 1);
+    dispatch({ type: "decrement"});
+  };
 
-  if (tours.length === 0) {
-    return (
-      <div>
-        <div className="title">
-          <h2>No Tours Left</h2>
-          <button onClick={() => fetchTours()} className="btn">
-            Referesh
-          </button>
-        </div>
-      </div>
-    );
-  }
-
+  
   return (
     <div className="app">
-      <Tours tours={tours} removeTour={removeTour} />
+      <h1>Counter App</h1>
+      <div>
+        <button onClick={decrement}>-</button>
+       <span>{state.count}</span>
+       <button onClick={increment}>+</button>
+      </div>
     </div>
   );
 }
